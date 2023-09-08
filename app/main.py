@@ -17,7 +17,7 @@ def run_app():
         desired_cols_str = st.text_area("Enter desired columns separated by commas:", value="")
         process_input = st.button("Process Columns Input")
 
-        if process_input and desired_cols_str:
+        if process_input:
             desired_columns = [col.strip() for col in desired_cols_str.split(",") if col.strip()]
             
             if desired_columns:
