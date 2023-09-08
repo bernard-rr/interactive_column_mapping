@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from .utils import gather_mappings, data_wrangling
+from app.utils import gather_mappings, data_wrangling
 
 
 def run_app():
