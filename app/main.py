@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from utils import gather_mappings, data_wrangling
 
-@st.cache(allow_output_mutation=True)
 def load_file(file):
     return pd.read_excel(file)
 
