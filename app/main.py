@@ -28,6 +28,8 @@ def run_app():
                 with st.spinner('Processing data...'):
                     df_out = data_wrangling(df, mappings, desired_columns)
                     st.write(df_out.head())  # Display only the first few rows
+                    # Button to download the processed Excel file
+                    st.markdown(get_file_download_link(df_out), unsafe_allow_html=True)
 
 def get_file_download_link(df, filename="processed_data.xlsx"):
     """Generate a link allowing the data in a given panda dataframe to be downloaded"""
