@@ -11,8 +11,13 @@ def run_app():
     
     st.title("Interactive Column Mapping")
     # Link to readme for instructions
-    st.markdown("[Read the instructions here](URL_TO_YOUR_README)")
-    
+    st.markdown("[Read the instructions here](https://github.com/bernard-rr/interactive_column_mapping#usage)")
+
+    # Adding the feedback email link
+    email = "bernardchidi5@gmail.com"
+    subject = "Feedback on the ICMT"
+    st.markdown(f"[Send me feedback](mailto:{email}?subject={subject})")
+
     uploaded_file = st.file_uploader("Choose an Excel file", type=['xlsx'])
     
     if uploaded_file:
