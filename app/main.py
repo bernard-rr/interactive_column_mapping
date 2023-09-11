@@ -5,7 +5,7 @@ import zipfile
 from utils import gather_mappings, data_wrangling
 import urllib.parse
 
-@st.cache(allow_output_mutation=True)
+@st.cache_data
 def load_file(file):
     return pd.read_excel(file)
 
