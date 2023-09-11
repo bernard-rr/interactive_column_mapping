@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from utils import gather_mappings, data_wrangling
+import urllib.parse
 
 @st.cache(allow_output_mutation=True)
 def load_file(file):
@@ -15,8 +16,9 @@ def run_app():
 
     # Adding the feedback email link
     email = "bernardchidi5@gmail.com"
-    subject = "Feedback on the ICMT"
-    st.markdown(f"[Send me feedback](mailto:{email}?subject={subject})")
+    subject = urllib.parse.quote("Feedback on the ICMT")
+    feedback_link = f"[Send me feedback](mailto:{email}?subject={subject})"
+    st.markdown(feedback_link)
 
     uploaded_file = st.file_uploader("Choose an Excel file", type=['xlsx'])
     
@@ -33,12 +35,12 @@ def run_app():
             if st.button("Submit All Mappings"):
                 with st.spinner('Processing data...'):
                     df_out = data_wrangling(df, mappings, desired_columns)
-                    st.write(df_out.head())  # Display only the first few rows
+                    st.write(df_out.head(10))  # Display only the first few rows
                     # Button to download the processed Excel file
                     st.markdown(get_file_download_link(df_out), unsafe_allow_html=True)
 
 def get_file_download_link(df, filename="processed_data.xlsx"):
-    """Generate a link allowing the data in a given panda dataframe to be downloaded"""
+    """Generate a link allowing the data in a given pandas dataframe to be downloaded"""
     import base64
     with pd.ExcelWriter(filename, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Sheet1')
