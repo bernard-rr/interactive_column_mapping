@@ -1,9 +1,11 @@
 import streamlit as st
 import pandas as pd
+import gzip
+import base64
 from utils import gather_mappings, data_wrangling
 import urllib.parse
 
-@st.cache_data
+@st.cache(allow_output_mutation=True)
 def load_file(file):
     return pd.read_excel(file)
 
@@ -35,17 +37,18 @@ def run_app():
             if st.button("Submit All Mappings"):
                 with st.spinner('Processing data...'):
                     df_out = data_wrangling(df, mappings, desired_columns)
-                    st.write(df_out.head(10))  # Display only the first few rows
-                    # Button to download the processed Excel file
+                    st.write(df_out.head())  # Display only the first few rows
+                    # Button to download the processed gzipped CSV file
                     st.markdown(get_file_download_link(df_out), unsafe_allow_html=True)
 
-def get_file_download_link(df, filename="processed_data.xlsx"):
-    """Generate a link allowing the data in a given pandas dataframe to be downloaded"""
-    import base64
-    with pd.ExcelWriter(filename, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name='Sheet1')
+def get_file_download_link(df, filename="processed_data.csv.gz"):
+    """Generate a link allowing the data in a given panda dataframe to be downloaded as a gzipped CSV"""
+    csv_as_string = df.to_csv(index=False).encode()
+    with gzip.open(filename, 'wb') as f:
+        f.write(csv_as_string)
+        
     b64 = base64.b64encode(open(filename, "rb").read()).decode()
-    return f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" download="{filename}">Download Excel file</a>'
+    return f'<a href="data:application/gzip;base64,{b64}" download="{filename}">Download compressed CSV file</a>'
 
 if __name__ == "__main__":
     run_app()
