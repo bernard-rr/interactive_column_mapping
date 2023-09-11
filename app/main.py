@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import base64
+import zipfile
 from utils import gather_mappings, data_wrangling
 import urllib.parse
 
@@ -37,14 +38,17 @@ def run_app():
                 with st.spinner('Processing data...'):
                     df_out = data_wrangling(df, mappings, desired_columns)
                     st.write(df_out.head())  # Display only the first few rows
-                    # Button to download the processed CSV file
+                    # Button to download the processed data inside a zipped folder
                     st.markdown(get_file_download_link(df_out), unsafe_allow_html=True)
 
-def get_file_download_link(df, filename="processed_data.csv"):
-    """Generate a link allowing the data in a given panda dataframe to be downloaded as a CSV"""
-    csv = df.to_csv(index=False).encode()  # Encode to bytes
-    b64 = base64.b64encode(csv).decode()  # Convert bytes to Base64 string
-    return f'<a href="data:text/csv;base64,{b64}" download="{filename}">Download CSV file</a>'
+def get_file_download_link(df, csv_filename="processed_data.csv", zip_filename="processed_data.zip"):
+    """Generate a link allowing the data in a given panda dataframe to be downloaded inside a zip file"""
+    csv = df.to_csv(index=False)
+    with zipfile.ZipFile(zip_filename, 'w') as zf:
+        zf.writestr(csv_filename, csv)
+        
+    b64 = base64.b64encode(open(zip_filename, "rb").read()).decode()
+    return f'<a href="data:application/zip;base64,{b64}" download="{zip_filename}">Download zipped CSV file</a>'
 
 if __name__ == "__main__":
     run_app()
