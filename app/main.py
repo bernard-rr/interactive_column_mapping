@@ -6,7 +6,7 @@ from io import BytesIO
 from utils import gather_mappings, data_wrangling
 import urllib.parse
 
-@st.cache(allow_output_mutation=True)  # Note: Changed decorator name to the correct one
+@st.cache_data  # Note: Changed decorator name to the correct one
 def load_file(file, file_extension):
     if file_extension == '.xlsx':
         return pd.read_excel(file)
