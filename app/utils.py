@@ -14,7 +14,7 @@ def gather_mappings(desired_columns, input_columns):
             mappings[desired_col] = value
     return mappings
 
-@st.cache
+@st.cache_data
 def data_wrangling(df, mappings, desired_columns):
     """Re-arrange and rename columns in the dataframe based on user mappings."""
     df = df.rename(columns=mappings)
