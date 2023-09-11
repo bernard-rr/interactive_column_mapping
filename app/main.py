@@ -6,9 +6,14 @@ from io import BytesIO
 from utils import gather_mappings, data_wrangling
 import urllib.parse
 
-@st.cache_data
-def load_file(file):
-    return pd.read_excel(file)
+@st.cache(allow_output_mutation=True)  # Note: Changed decorator name to the correct one
+def load_file(file, file_extension):
+    if file_extension == '.xlsx':
+        return pd.read_excel(file)
+    elif file_extension == '.csv':
+        return pd.read_csv(file)
+    else:
+        raise ValueError("Unsupported file format")
 
 def run_app():
     """Run the Streamlit app for interactive column mapping."""
@@ -21,10 +26,12 @@ def run_app():
     feedback_link = f"[Send me feedback](mailto:{email}?subject={subject})"
     st.markdown(feedback_link)
 
-    uploaded_file = st.file_uploader("Choose an Excel file", type=['xlsx'])
+    uploaded_file = st.file_uploader("Choose an Excel or CSV file", type=['xlsx', 'csv'])
     
     if uploaded_file:
-        df = load_file(uploaded_file)
+        file_extension = '.' + uploaded_file.name.split('.')[-1].lower()
+        df = load_file(uploaded_file, file_extension)
+
         desired_cols_str = st.text_area("Enter desired columns separated by commas:", value="")
         desired_columns = [col.strip() for col in desired_cols_str.split(",") if col.strip()]
         
