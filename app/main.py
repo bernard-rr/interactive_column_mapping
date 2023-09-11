@@ -38,22 +38,22 @@ def run_app():
                     st.write(df_out.head())
                     st.markdown(get_file_download_link(df_out), unsafe_allow_html=True)
 
-def get_file_download_link(df, excel_filename="processed_data.xlsx"):
+def get_file_download_link(df, csv_filename="processed_data.csv"):
     """Generate a link allowing the data in a given panda dataframe to be downloaded inside a zip file"""
     
-    # Convert DF to Excel in memory
-    excel_buffer = BytesIO()
-    df.to_excel(excel_buffer, index=False, engine='openpyxl')
-    excel_buffer.seek(0) # Go to start of the buffer
+    # Convert DF to CSV in memory
+    csv_buffer = BytesIO()
+    df.to_csv(csv_buffer, index=False)
+    csv_buffer.seek(0) # Go to start of the buffer
 
     # Create a zip file in memory
     zip_buffer = BytesIO()
     with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr(excel_filename, excel_buffer.getvalue())
+        zf.writestr(csv_filename, csv_buffer.getvalue())
     zip_buffer.seek(0) # Go to start of the buffer
 
     b64 = base64.b64encode(zip_buffer.getvalue()).decode()
-    return f'<a href="data:application/zip;base64,{b64}" download="processed_data.zip">Download zipped Excel file</a>'
+    return f'<a href="data:application/zip;base64,{b64}" download="processed_data.zip">Download zipped CSV file</a>'
 
 if __name__ == "__main__":
     run_app()
