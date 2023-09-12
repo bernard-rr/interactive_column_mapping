@@ -1,4 +1,4 @@
-# **Interactive Column Mapping Tool**
+# **Interactive Column Mapping Tool (ICMT)**
 [Live App](https://icmt-app.streamlit.app/)
 
 ## **Project Overview**
